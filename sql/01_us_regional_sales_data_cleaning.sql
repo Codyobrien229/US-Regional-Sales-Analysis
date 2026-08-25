@@ -3,7 +3,6 @@ SELECT *
 FROM us_regional_sales_data
 ;
 
-
 -- Check the total number of records.
 SELECT COUNT(*)
 FROM us_regional_sales_data
@@ -16,11 +15,12 @@ LIKE us_regional_sales_data
 
 -- Verify that the original and backup tables contain the same number of records.
 SELECT COUNT(*)
-FROM us_regional_sales_data;
+FROM us_regional_sales_data
+;
 
 SELECT COUNT(*)
-FROM us_regional_sales_backup;
-
+FROM us_regional_sales_backup
+;
 
 -- Rename ID fields for cleaner column names.
 ALTER TABLE us_regional_sales_data
@@ -30,14 +30,12 @@ CHANGE _StoreID StoreID INT,
 CHANGE _ProductID ProductID INT
 ;
 
-
 -- Identify duplicate Order Numbers.
 SELECT OrderNumber, COUNT(OrderNumber)
 FROM us_regional_sales_data
 GROUP BY OrderNumber
 HAVING COUNT(OrderNumber) > 1
 ;
-
 
 -- Check for NULL values in the dataset.
 SELECT *
@@ -60,7 +58,6 @@ OR `Unit Cost` IS NULL
 OR `Unit Price` IS NULL
 ;
 
-
 -- Check for blank values in text columns.
 SELECT *
 FROM us_regional_sales_data
@@ -75,24 +72,20 @@ OR `Unit Cost` = ''
 OR `Unit Price` = ''
 ;
 
-
 -- Review the different Sales Channel values.
 SELECT DISTINCT `Sales Channel`
 FROM us_regional_sales_data
 ;
-
 
 -- Review the different Warehouse Codes.
 SELECT DISTINCT WarehouseCode
 FROM us_regional_sales_data
 ;
 
-
 -- Review the different Currency Codes.
 SELECT DISTINCT CurrencyCode
 FROM us_regional_sales_data
 ;
-
 
 -- Add new columns to convert the date fields from text to DATE.
 ALTER TABLE us_regional_sales_data
@@ -101,7 +94,6 @@ ADD COLUMN OrderDate_New DATE,
 ADD COLUMN ShipDate_New DATE,
 ADD COLUMN DeliveryDate_New DATE
 ;
-
 
 -- Convert dates with two-digit or four-digit years into proper DATE values.
 UPDATE us_regional_sales_data
@@ -134,7 +126,6 @@ SET ProcuredDate_New =
 	END
 ;
 
-
 -- Verify that the date fields were converted correctly.
 SELECT
 	ProcuredDate,
@@ -149,7 +140,6 @@ FROM us_regional_sales_data
 LIMIT 20
 ;
 
-
 -- Check that the date conversion did not create NULL values.
 SELECT *
 FROM us_regional_sales_data
@@ -159,7 +149,6 @@ OR ShipDate_New IS NULL
 OR DeliveryDate_New IS NULL
 ;
 
-
 -- Replace the original text date columns with the converted DATE columns.
 ALTER TABLE us_regional_sales_data
 DROP COLUMN ProcuredDate,
@@ -167,7 +156,6 @@ DROP COLUMN OrderDate,
 DROP COLUMN ShipDate,
 DROP COLUMN DeliveryDate
 ;
-
 
 -- Rename the new DATE columns to the original column names.
 ALTER TABLE us_regional_sales_data
@@ -177,13 +165,11 @@ CHANGE ShipDate_New ShipDate DATE,
 CHANGE DeliveryDate_New DeliveryDate DATE
 ;
 
-
 -- Check for Ship Dates that occur before Order Dates.
 SELECT *
 FROM us_regional_sales_data
 WHERE ShipDate < OrderDate
 ;
-
 
 -- Check for Delivery Dates that occur before Ship Dates.
 SELECT *
@@ -191,13 +177,11 @@ FROM us_regional_sales_data
 WHERE DeliveryDate < ShipDate
 ;
 
-
 -- Add new numeric columns for Unit Cost and Unit Price.
 ALTER TABLE us_regional_sales_data
 ADD COLUMN UnitCost_New DECIMAL(10,2),
 ADD COLUMN UnitPrice_New DECIMAL(10,2)
 ;
-
 
 -- Remove dollar signs and commas and convert Unit Cost and Unit Price to numeric values.
 UPDATE us_regional_sales_data
@@ -214,7 +198,6 @@ SET UnitCost_New =
 	)
 ;
 
-
 -- Verify that Unit Cost and Unit Price were converted correctly.
 SELECT
 	`Unit Cost`,
@@ -225,7 +208,6 @@ FROM us_regional_sales_data
 LIMIT 20
 ;
 
-
 -- Check that the numeric conversion did not create NULL values.
 SELECT *
 FROM us_regional_sales_data
@@ -233,13 +215,11 @@ WHERE UnitCost_New IS NULL
 OR UnitPrice_New IS NULL
 ;
 
-
 -- Replace the original text Unit Cost and Unit Price columns.
 ALTER TABLE us_regional_sales_data
 DROP COLUMN `Unit Cost`,
 DROP COLUMN `Unit Price`
 ;
-
 
 -- Rename the new numeric columns to the original column names.
 ALTER TABLE us_regional_sales_data
@@ -247,13 +227,11 @@ CHANGE UnitCost_New `Unit Cost` DECIMAL(10,2),
 CHANGE UnitPrice_New `Unit Price` DECIMAL(10,2)
 ;
 
-
 -- Check for invalid Order Quantity values.
 SELECT *
 FROM us_regional_sales_data
 WHERE `Order Quantity` <= 0
 ;
-
 
 -- Check for invalid Unit Cost or Unit Price values.
 SELECT *
@@ -262,7 +240,6 @@ WHERE `Unit Cost` <= 0
 OR `Unit Price` <= 0
 ;
 
-
 -- Check for Discount Applied values outside the expected range.
 SELECT *
 FROM us_regional_sales_data
@@ -270,11 +247,9 @@ WHERE `Discount Applied` < 0
 OR `Discount Applied` > 1
 ;
 
-
 -- Review the final data types after cleaning.
 DESCRIBE us_regional_sales_data
 ;
-
 
 -- Check the final number of records.
 SELECT COUNT(*)
