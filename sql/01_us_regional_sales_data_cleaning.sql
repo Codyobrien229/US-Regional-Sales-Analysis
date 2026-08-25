@@ -256,7 +256,6 @@ SELECT COUNT(*)
 FROM us_regional_sales_data
 ;
 
-
 -- Review the final cleaned dataset.
 SELECT *
 FROM us_regional_sales_data
